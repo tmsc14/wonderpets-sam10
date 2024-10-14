@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('test', function (Blueprint $table) {
+        Schema::create('test', function (Blueprint $table) {
             $table->id();
             $table->string('deploy')->index();
             $table->longText('status');
