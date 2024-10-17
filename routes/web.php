@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\SentimentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,6 +33,16 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     
     // Handle user deletion
     Route::delete('/admin/delete-user/{id}', [AdminController::class, 'deleteUser'])->name('admin.deleteUser');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Route for displaying the sentiment analysis form
+    Route::get('/sentiment-analyze', function () {
+        return view('sentiment-analyze');
+    })->name('sentiment.form');
+
+    // Route for processing the sentiment analysis
+    Route::post('/sentiment-analyze', [SentimentController::class, 'analyze'])->name('sentiment.analyze');
 });
 
 require __DIR__.'/auth.php';
