@@ -12,13 +12,58 @@
                     <h3 class="text-lg font-semibold mb-4">Analyze Text Sentiment</h3>
 
                     @if(session('result'))
-                    <div class="bg-blue-500 text-white p-4 rounded mb-4">
-                        <strong>Sentiment:</strong> {{ session('result')['sentiment'] }}<br>
-                        <strong>Positive Score:</strong> {{ session('result')['positiveScore'] }}%<br>
-                        <strong>Negative Score:</strong> {{ session('result')['negativeScore'] }}%<br>
-                        <strong>Neutral Score:</strong> {{ session('result')['neutralScore'] }}%<br>
-                        <strong>Compound Score:</strong> {{ session('result')['compoundScore'] }}%
-                    </div>
+                        <div class="bg-blue-500 text-white p-4 rounded mb-4">
+                            <strong>Sentiment:</strong> {{ session('result')['sentiment'] }}<br>
+                            <strong>Positive Score:</strong> {{ session('result')['positiveScore'] }}%<br>
+                            <strong>Negative Score:</strong> {{ session('result')['negativeScore'] }}%<br>
+                            <strong>Neutral Score:</strong> {{ session('result')['neutralScore'] }}%<br>
+                            <strong>Compound Score:</strong> {{ session('result')['compoundScore'] }}%
+                        </div>
+
+                        <!-- Chart Container -->
+                        <canvas id="sentimentChart" width="400" height="200"></canvas>
+
+                        <script>
+                            const ctx = document.getElementById('sentimentChart').getContext('2d');
+                            const sentimentData = {
+                                labels: ['Positive', 'Negative', 'Neutral'],
+                                datasets: [{
+                                    label: 'Sentiment Scores',
+                                    data: [
+                                        {{ session('result')['scores']['Positive'] }},
+                                        {{ session('result')['scores']['Negative'] }},
+                                        {{ session('result')['scores']['Neutral'] }}
+                                    ],
+                                    backgroundColor: [
+                                        'rgba(75, 192, 192, 0.6)',
+                                        'rgba(255, 99, 132, 0.6)',
+                                        'rgba(255, 206, 86, 0.6)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(255, 206, 86, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            };
+
+                            const sentimentChart = new Chart(ctx, {
+                                type: 'bar', // Change this to 'pie', 'line', etc., if desired
+                                data: sentimentData,
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            title: {
+                                                display: true,
+                                                text: 'Score (%)'
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        </script>
                     @endif
 
                     <form action="{{ route('sentiment.analyze') }}" method="POST">
