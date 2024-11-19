@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Sentiment\Analyzer;
 use App\Models\SentimentHistory;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SentimentController extends Controller
 {
@@ -65,9 +66,46 @@ class SentimentController extends Controller
 
     public function history()
     {
-        // Retrieve the latest 10 sentiment analysis results
         $histories = SentimentHistory::orderBy('created_at', 'desc')->take(10)->get();
 
         return view('sentiment-history', compact('histories'));
+    }
+    public function exportToPDF()
+    {
+        $histories = SentimentHistory::orderBy('created_at', 'desc')->take(10)->get();
+    
+        // Load the view and pass data to it
+        $pdf = PDF::loadView('exports.sentiment_history', compact('histories'));
+    
+        // Download the generated PDF file
+        return $pdf->download('sentiment_history.pdf');
+    }
+
+    public function exportToCSV()
+    {
+        $histories = SentimentHistory::orderBy('created_at', 'desc')->take(10)->get();
+
+        $csvFileName = 'sentiment_history.csv';
+        $handle = fopen('php://output', 'w');
+
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $csvFileName . '"');
+
+        fputcsv($handle, ['Text', 'Sentiment', 'Positive Score', 'Negative Score', 'Neutral Score', 'Compound Score', 'Date']);
+
+        foreach ($histories as $history) {
+            fputcsv($handle, [
+                $history->text,
+                $history->sentiment,
+                $history->positive_score,
+                $history->negative_score,
+                $history->neutral_score,
+                $history->compound_score,
+                $history->created_at->format('Y-m-d H:i')
+            ]);
+        }
+
+        fclose($handle);
+        exit; 
     }
 }

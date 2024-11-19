@@ -46,7 +46,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Route for displaying sentiment history
     Route::get('/sentiment-history', [SentimentController::class, 'history'])->name('sentiment.history');
+
+    Route::get('/export/pdf', [SentimentController::class, 'exportToPDF'])->name('export.pdf');
+    Route::get('/export/csv', [SentimentController::class, 'exportToCSV'])->name('export.csv');
 });
+
+
 
 require __DIR__.'/auth.php';
 

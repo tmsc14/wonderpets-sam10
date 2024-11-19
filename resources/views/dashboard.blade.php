@@ -9,6 +9,12 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+
+                    <!-- Export Buttons -->
+                    <div class="mb-4">
+                        <a href="{{ route('export.pdf') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Download PDF</a>
+                        <a href="{{ route('export.csv') }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Download CSV</a>
+                    </div>
                     <h3 class="text-lg font-semibold mb-4">Welcome, {{ $user->name }}</h3>
 
                     <h3 class="text-lg font-semibold mb-4">Recent Sentiment Analyses</h3>
