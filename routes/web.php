@@ -43,6 +43,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Route for processing the sentiment analysis
     Route::post('/sentiment-analyze', [SentimentController::class, 'analyze'])->name('sentiment.analyze');
+
+    // Route for displaying sentiment history
+    Route::get('/sentiment-history', [SentimentController::class, 'history'])->name('sentiment.history');
 });
 
 require __DIR__.'/auth.php';

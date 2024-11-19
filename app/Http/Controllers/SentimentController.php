@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Sentiment\Analyzer;
+use App\Models\SentimentHistory;
 
 class SentimentController extends Controller
 {
@@ -37,6 +38,16 @@ class SentimentController extends Controller
             $sentiment = 'Neutral';
         }
     
+        // Save analysis result to history
+        SentimentHistory::create([
+            'text' => $text,
+            'sentiment' => $sentiment,
+            'positive_score' => round($positivePercentage, 2),
+            'negative_score' => round($negativePercentage, 2),
+            'neutral_score' => round($neutralPercentage, 2),
+            'compound_score' => round($compoundPercentage, 2),
+        ]);
+    
         // Pass result back to the view
         return redirect()->back()->with('result', [
             'sentiment' => $sentiment,
@@ -50,5 +61,13 @@ class SentimentController extends Controller
                 'Neutral' => round($neutralPercentage, 2),
             ],
         ]);
+    }
+
+    public function history()
+    {
+        // Retrieve the latest 10 sentiment analysis results
+        $histories = SentimentHistory::orderBy('created_at', 'desc')->take(10)->get();
+
+        return view('sentiment-history', compact('histories'));
     }
 }
