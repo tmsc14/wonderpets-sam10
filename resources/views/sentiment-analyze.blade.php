@@ -12,11 +12,13 @@
                     <h3 class="text-lg font-semibold mb-4">Analyze Text Sentiment</h3>
 
                     @if(session('result'))
-                        <div class="bg-blue-500 text-white p-4 rounded mb-4">
-                            <strong>Sentiment:</strong> {{ session('result')['sentiment'] }}<br>
-                            <strong>Positive Words:</strong> {{ session('result')['positiveCount'] }}<br>
-                            <strong>Negative Words:</strong> {{ session('result')['negativeCount'] }}
-                        </div>
+                    <div class="bg-blue-500 text-white p-4 rounded mb-4">
+                        <strong>Sentiment:</strong> {{ session('result')['sentiment'] }}<br>
+                        <strong>Positive Score:</strong> {{ session('result')['positiveScore'] }}%<br>
+                        <strong>Negative Score:</strong> {{ session('result')['negativeScore'] }}%<br>
+                        <strong>Neutral Score:</strong> {{ session('result')['neutralScore'] }}%<br>
+                        <strong>Compound Score:</strong> {{ session('result')['compoundScore'] }}%
+                    </div>
                     @endif
 
                     <form action="{{ route('sentiment.analyze') }}" method="POST">
