@@ -64,11 +64,11 @@
                     <!-- Chart for User and Sentiment Analysis Counts -->
                     <h3 class="text-lg font-semibold mb-4 mt-6">User and Sentiment Analysis Counts</h3>
                     <div class="mb-6">
-                        <canvas id="dashboardChart" width="400" height="200"></canvas> <!-- Bar chart canvas -->
+                        <canvas id="dashboardChart" width="400" height="200"></canvas>
                     </div>
 
                     <!-- Chart.js script -->
-                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js -->
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
                     <script>
                         const ctx = document.getElementById('dashboardChart').getContext('2d');
@@ -78,7 +78,7 @@
                                 labels: ['Total Users', 'Total Sentiment Analyses'],
                                 datasets: [{
                                     label: 'Counts',
-                                    data: [{{ $totalUsers }}, {{ $totalSentimentAnalyses }}], // Use PHP variables
+                                    data: [{{ $totalUsers }}, {{ $totalSentimentAnalyses }}],
                                     backgroundColor: [
                                         'rgba(75, 192, 192, 0.6)',
                                         'rgba(255, 99, 132, 0.6)',
@@ -104,10 +104,10 @@
                         });
                     </script>
 
-                </div> <!-- End of p6 -->
-            </div> <!-- End of bg-white -->
-        </div> <!-- End of max-w -->
-    </div> <!-- End of py -->
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>
 
 <style>

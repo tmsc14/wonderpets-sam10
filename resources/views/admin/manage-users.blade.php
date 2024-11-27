@@ -45,7 +45,7 @@
                                         <!-- Form for updating user details -->
                                         <form action="{{ route('admin.updateUser', $user->id) }}" method="POST">
                                             @csrf
-                                            @method('PUT') <!-- Simulate a PUT request -->
+                                            @method('PUT')
 
                                             <td class="border px-4 py-2">
                                                 <input type="text" name="name" value="{{ $user->name }}" 
@@ -70,7 +70,7 @@
                                         <!-- Form for deleting user -->
                                         <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST">
                                             @csrf
-                                            @method('DELETE') <!-- Simulate a DELETE request -->
+                                            @method('DELETE')
                                             <button type="submit" 
                                                     class="text-sm bg-red-500 hover:bg-red-700 text-white font-semibold py-1 px-2 rounded-md">Delete</button>
                                         </form>
@@ -81,12 +81,11 @@
                         </table>
                     </div>
 
-                    <!-- Pagination -->
                     <div class="mt-4">
                         {{ $users->links() }}
                     </div>
-                </div> <!-- End of p-6 -->
-            </div> <!-- End of bg-white -->
-        </div> <!-- End of max-w -->
-    </div> <!-- End of py -->
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>

@@ -82,6 +82,32 @@ class SentimentController extends Controller
 
         return view('sentiment-history', compact('histories'));
     }
+
+    public function deleteHistory(Request $request)
+    {
+        $action = $request->input('action'); // Determine the action (delete_selected or delete_all)
+
+        if ($action === 'delete_all' && Auth::user()->role === 'admin') {
+            // Admin deletes all sentiment histories
+            SentimentHistory::truncate(); // Use truncate for quick deletion of all entries
+        } elseif ($action === 'delete_selected') {
+            // Delete only the selected histories
+            $historyIds = $request->input('history_ids');
+
+            if ($historyIds) {
+                $query = SentimentHistory::whereIn('id', $historyIds);
+
+                // Ensure regular users can only delete their own histories
+                if (Auth::user()->role !== 'admin') {
+                    $query->where('user_id', Auth::id());
+                }
+
+                $query->delete();
+            }
+        }
+
+        return redirect()->route('sentiment.history')->with('success', 'Selected sentiment histories deleted successfully.');
+    }
     
     public function exportToPDF()
     {

@@ -49,6 +49,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/export/pdf', [SentimentController::class, 'exportToPDF'])->name('export.pdf');
     Route::get('/export/csv', [SentimentController::class, 'exportToCSV'])->name('export.csv');
+
+    Route::delete('/sentiment-history/delete', [SentimentController::class, 'deleteHistory'])->name('sentiment.history.delete');
 });
 
 
