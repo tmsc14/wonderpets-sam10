@@ -47,11 +47,14 @@ class AdminController extends Controller
      */
     public function deleteUser($id)
     {
-        // Find the user by ID and delete them
+        // Find the user by ID
         $user = User::findOrFail($id);
+    
+        // Delete the user and their associated sentiment histories
         $user->delete();
-
+    
         // Redirect back with a success message
-        return redirect()->route('admin.manageUsers')->with('success', 'User deleted successfully.');
+        return redirect()->route('admin.manageUsers')->with('success', 'User and associated sentiment analyses deleted successfully.');
     }
+    
 }

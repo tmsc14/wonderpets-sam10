@@ -11,16 +11,24 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h3 class="text-lg font-semibold mb-4">User Management</h3>
 
+                    <!-- Success and Error Messages -->
                     @if(session('success'))
                         <div class="bg-green-500 text-white p-4 rounded mb-4">
                             {{ session('success') }}
                         </div>
                     @endif
 
-                    <!-- Search Bar -->
-                    <input type="text" placeholder="Search users..." class="mb-4 w-full px-4 py-2 rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
+                    @if(session('error'))
+                        <div class="bg-red-500 text-white p-4 rounded mb-4">
+                            {{ session('error') }}
+                        </div>
+                    @endif
 
-                    <!-- User table -->
+                    <!-- Search Bar -->
+                    <input type="text" placeholder="Search users..." 
+                           class="mb-4 w-full px-4 py-2 rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
+
+                    <!-- User Table -->
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white dark:bg-gray-800 dark:text-gray-100 rounded-lg overflow-hidden">
                             <thead class="bg-gray-50 dark:bg-gray-700">
@@ -34,29 +42,39 @@
                             <tbody>
                                 @foreach ($users as $user)
                                     <tr class="border-b dark:border-gray-600">
+                                        <!-- Form for updating user details -->
                                         <form action="{{ route('admin.updateUser', $user->id) }}" method="POST">
                                             @csrf
+                                            @method('PUT') <!-- Simulate a PUT request -->
+
                                             <td class="border px-4 py-2">
-                                                <input type="text" name="name" value="{{ $user->name }}" class="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2">
+                                                <input type="text" name="name" value="{{ $user->name }}" 
+                                                       class="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2" required>
                                             </td>
                                             <td class="border px-4 py-2">
-                                                <input type="email" name="email" value="{{ $user->email }}" class="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2">
+                                                <input type="email" name="email" value="{{ $user->email }}" 
+                                                       class="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2" required>
                                             </td>
                                             <td class="border px-4 py-2">
-                                                <select name="role" class="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2">
+                                                <select name="role" class="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2" required>
                                                     <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
                                                     <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User</option>
                                                 </select>
                                             </td>
                                             <td class="border px-4 py-2 flex items-center space-x-2">
-                                                <button type="submit" class="text-sm bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1 px-2 rounded-md">Update</button>
-                                                <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-sm bg-red-500 hover:bg-red-700 text-white font-semibold py-1 px-2 rounded-md">Delete</button>
-                                                </form>
-                                            </td>
+                                                <!-- Update Button -->
+                                                <button type="submit" 
+                                                        class="text-sm bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1 px-2 rounded-md">Update</button>
                                         </form>
+
+                                        <!-- Form for deleting user -->
+                                        <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE') <!-- Simulate a DELETE request -->
+                                            <button type="submit" 
+                                                    class="text-sm bg-red-500 hover:bg-red-700 text-white font-semibold py-1 px-2 rounded-md">Delete</button>
+                                        </form>
+                                            </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -67,8 +85,8 @@
                     <div class="mt-4">
                         {{ $users->links() }}
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                </div> <!-- End of p-6 -->
+            </div> <!-- End of bg-white -->
+        </div> <!-- End of max-w -->
+    </div> <!-- End of py -->
 </x-app-layout>

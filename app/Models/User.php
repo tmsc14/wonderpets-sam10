@@ -46,4 +46,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function sentimentHistories()
+    {
+        return $this->hasMany(SentimentHistory::class, 'user_id');
+    }
 }

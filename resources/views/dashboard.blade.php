@@ -61,10 +61,53 @@
                         </table>
                     </div>
 
-                </div>
-            </div>
-        </div>
-    </div>
+                    <!-- Chart for User and Sentiment Analysis Counts -->
+                    <h3 class="text-lg font-semibold mb-4 mt-6">User and Sentiment Analysis Counts</h3>
+                    <div class="mb-6">
+                        <canvas id="dashboardChart" width="400" height="200"></canvas> <!-- Bar chart canvas -->
+                    </div>
+
+                    <!-- Chart.js script -->
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js -->
+
+                    <script>
+                        const ctx = document.getElementById('dashboardChart').getContext('2d');
+                        const dashboardChart = new Chart(ctx, {
+                            type: 'bar', // Bar chart type
+                            data: {
+                                labels: ['Total Users', 'Total Sentiment Analyses'],
+                                datasets: [{
+                                    label: 'Counts',
+                                    data: [{{ $totalUsers }}, {{ $totalSentimentAnalyses }}], // Use PHP variables
+                                    backgroundColor: [
+                                        'rgba(75, 192, 192, 0.6)',
+                                        'rgba(255, 99, 132, 0.6)',
+                                    ],
+                                    borderColor: [
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(255, 99, 132, 1)',
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Count'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    </script>
+
+                </div> <!-- End of p6 -->
+            </div> <!-- End of bg-white -->
+        </div> <!-- End of max-w -->
+    </div> <!-- End of py -->
 </x-app-layout>
 
 <style>
@@ -97,6 +140,7 @@
 </style>
 
 <script>
+// Add data-label attributes for mobile responsiveness
 document.querySelectorAll('tbody tr').forEach(row => {
     row.querySelectorAll('td').forEach((cell, index) => {
         const headers = ['Text', 'Sentiment', 'Positive Score', 'Negative Score', 'Neutral Score', 'Compound Score', 'Date'];
