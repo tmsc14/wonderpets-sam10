@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Sentiment\Analyzer;
 use App\Models\SentimentHistory;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class SentimentController extends Controller
 {
@@ -39,7 +40,7 @@ class SentimentController extends Controller
             $sentiment = 'Neutral';
         }
     
-        // Save analysis result to history
+        // Save analysis result to history with user_id
         SentimentHistory::create([
             'text' => $text,
             'sentiment' => $sentiment,
@@ -47,6 +48,7 @@ class SentimentController extends Controller
             'negative_score' => round($negativePercentage, 2),
             'neutral_score' => round($neutralPercentage, 2),
             'compound_score' => round($compoundPercentage, 2),
+            'user_id' => Auth::id(), // Associate the analysis with the authenticated user
         ]);
     
         // Pass result back to the view
@@ -66,13 +68,34 @@ class SentimentController extends Controller
 
     public function history()
     {
-        $histories = SentimentHistory::orderBy('created_at', 'desc')->take(10)->get();
+        // Fetch histories based on user role
+        $user = Auth::user();
+        
+        if ($user->role === 'admin') {
+            $histories = SentimentHistory::orderBy('created_at', 'desc')->take(10)->get();
+        } else {
+            $histories = SentimentHistory::where('user_id', $user->id)
+                                         ->orderBy('created_at', 'desc')
+                                         ->take(10)
+                                         ->get();
+        }
 
         return view('sentiment-history', compact('histories'));
     }
+    
     public function exportToPDF()
     {
-        $histories = SentimentHistory::orderBy('created_at', 'desc')->take(10)->get();
+        $user = Auth::user(); // Get the authenticated user
+    
+        if ($user->role === 'admin') {
+            // Admin: Fetch all sentiment histories
+            $histories = SentimentHistory::orderBy('created_at', 'desc')->get();
+        } else {
+            // Regular user: Fetch only their sentiment histories
+            $histories = SentimentHistory::where('user_id', $user->id)
+                                         ->orderBy('created_at', 'desc')
+                                         ->get();
+        }
     
         // Load the view and pass data to it
         $pdf = PDF::loadView('exports.sentiment_history', compact('histories'));
@@ -80,19 +103,29 @@ class SentimentController extends Controller
         // Download the generated PDF file
         return $pdf->download('sentiment_history.pdf');
     }
-
+    
     public function exportToCSV()
     {
-        $histories = SentimentHistory::orderBy('created_at', 'desc')->take(10)->get();
-
+        $user = Auth::user(); // Get the authenticated user
+    
+        if ($user->role === 'admin') {
+            // Admin: Fetch all sentiment histories
+            $histories = SentimentHistory::orderBy('created_at', 'desc')->get();
+        } else {
+            // Regular user: Fetch only their sentiment histories
+            $histories = SentimentHistory::where('user_id', $user->id)
+                                         ->orderBy('created_at', 'desc')
+                                         ->get();
+        }
+    
         $csvFileName = 'sentiment_history.csv';
         $handle = fopen('php://output', 'w');
-
+    
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="' . $csvFileName . '"');
-
+    
         fputcsv($handle, ['Text', 'Sentiment', 'Positive Score', 'Negative Score', 'Neutral Score', 'Compound Score', 'Date']);
-
+    
         foreach ($histories as $history) {
             fputcsv($handle, [
                 $history->text,
@@ -104,7 +137,7 @@ class SentimentController extends Controller
                 $history->created_at->format('Y-m-d H:i')
             ]);
         }
-
+    
         fclose($handle);
         exit; 
     }

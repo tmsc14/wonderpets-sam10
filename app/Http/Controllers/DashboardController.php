@@ -10,13 +10,16 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Get the authenticated user
         $user = Auth::user();
-        
-        // Retrieve the latest 10 sentiment analysis results for the user
-        $histories = SentimentHistory::orderBy('created_at', 'desc')->take(10)->get();
-
-        // Pass the user and sentiment histories to the view
+    
+        if ($user->role === 'admin') {
+            $histories = SentimentHistory::orderBy('created_at', 'desc')->take(10)->get();
+        } else {
+            $histories = SentimentHistory::where('user_id', $user->id)
+                                         ->orderBy('created_at', 'desc')
+                                         ->take(10)
+                                         ->get();
+        }
         return view('dashboard', compact('user', 'histories'));
     }
 }

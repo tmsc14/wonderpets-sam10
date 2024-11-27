@@ -10,7 +10,6 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    <!-- Export Buttons -->
                     <div class="mb-4">
                         <a href="{{ route('export.pdf') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Download PDF</a>
                         <a href="{{ route('export.csv') }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Download CSV</a>
@@ -19,35 +18,89 @@
 
                     <h3 class="text-lg font-semibold mb-4">Recent Sentiment Analyses</h3>
 
-                    <table class="min-w-full bg-white border border-gray-300 mt-4">
-                        <thead>
-                            <tr>
-                                <th class="border px-4 py-2">Text</th>
-                                <th class="border px-4 py-2">Sentiment</th>
-                                <th class="border px-4 py-2">Positive Score</th>
-                                <th class="border px-4 py-2">Negative Score</th>
-                                <th class="border px-4 py-2">Neutral Score</th>
-                                <th class="border px-4 py-2">Compound Score</th>
-                                <th class="border px-4 py-2">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($histories as $history)
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-300 mt-4">
+                            <thead>
                                 <tr>
-                                    <td class="border px-4 py-2">{{ Str::limit($history->text, 50) }}</td>
-                                    <td class="border px-4 py-2">{{ $history->sentiment }}</td>
-                                    <td class="border px-4 py-2">{{ $history->positive_score }}%</td>
-                                    <td class="border px-4 py-2">{{ $history->negative_score }}%</td>
-                                    <td class="border px-4 py-2">{{ $history->neutral_score }}%</td>
-                                    <td class="border px-4 py-2">{{ $history->compound_score }}%</td>
-                                    <td class="border px-4 py-2">{{ $history->created_at->format('Y-m-d H:i') }}</td>
+                                    <th class="border px-4 py-2">Text</th>
+                                    <th class="border px-4 py-2">Sentiment</th>
+                                    <th class="border px-4 py-2">Positive Score</th>
+                                    <th class="border px-4 py-2">Negative Score</th>
+                                    <th class="border px-4 py-2">Neutral Score</th>
+                                    <th class="border px-4 py-2">Compound Score</th>
+                                    <th class="border px-4 py-2">Date</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @if ($user->role === 'admin')
+                                    @foreach($histories as $history) <!-- Admin sees all -->
+                                        <tr>
+                                            <td class="border px-4 py-2">{{ Str::limit($history->text, 50) }}</td>
+                                            <td class="border px-4 py-2">{{ $history->sentiment }}</td>
+                                            <td class="border px-4 py-2">{{ $history->positive_score }}%</td>
+                                            <td class="border px-4 py-2">{{ $history->negative_score }}%</td>
+                                            <td class="border px-4 py-2">{{ $history->neutral_score }}%</td>
+                                            <td class="border px-4 py-2">{{ $history->compound_score }}%</td>
+                                            <td class="border px-4 py-2">{{ $history->created_at->format('Y-m-d H:i') }}</td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    @foreach($histories as $history) <!-- Regular user sees their own -->
+                                        <tr>
+                                            <td class="border px-4 py-2">{{ Str::limit($history->text, 50) }}</td>
+                                            <td class="border px-4 py-2">{{ $history->sentiment }}</td>
+                                            <td class="border px-4 py-2">{{ $history->positive_score }}%</td>
+                                            <td class="border px-4 py-2">{{ $history->negative_score }}%</td>
+                                            <td class="border px-4 py-2">{{ $history->neutral_score }}%</td>
+                                            <td class="border px-4 py-2">{{ $history->compound_score }}%</td>
+                                            <td class="border px-4 py-2">{{ $history->created_at->format('Y-m-d H:i') }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
             </div>
         </div>
     </div>
 </x-app-layout>
+
+<style>
+    @media (max-width: 640px) {
+        table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        thead {
+            display: none;
+        }
+        tr {
+            display: block;
+            margin-bottom: 1rem;
+            border: 1px solid #e5e7eb;
+        }
+        td {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        td::before {
+            content: attr(data-label);
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+    }
+</style>
+
+<script>
+document.querySelectorAll('tbody tr').forEach(row => {
+    row.querySelectorAll('td').forEach((cell, index) => {
+        const headers = ['Text', 'Sentiment', 'Positive Score', 'Negative Score', 'Neutral Score', 'Compound Score', 'Date'];
+        cell.setAttribute('data-label', headers[index]);
+    });
+});
+</script>

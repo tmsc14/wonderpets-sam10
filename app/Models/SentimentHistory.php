@@ -16,5 +16,11 @@ class SentimentHistory extends Model
         'negative_score',
         'neutral_score',
         'compound_score',
+        'user_id', // Add user_id to fillable attributes
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
