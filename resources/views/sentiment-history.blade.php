@@ -72,7 +72,45 @@
         </div>
     </div>
 
+    <style>
+        /* Mobile-Responsive Styles for Table */
+        @media (max-width: 640px) {
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            thead {
+                display: none;
+            }
+            tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid #e5e7eb;
+            }
+            td {
+                display: flex;
+                justify-content: space-between;
+                padding: 0.5rem;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                margin-right: 1rem;
+            }
+        }
+    </style>
+
     <script>
+        // Add data-label attributes for mobile responsiveness
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.querySelectorAll('td').forEach((cell, index) => {
+                const headers = ['Select', 'Text', 'Sentiment', 'Positive Score', 'Negative Score', 'Neutral Score', 'Compound Score', 'Date'];
+                cell.setAttribute('data-label', headers[index]);
+            });
+        });
+
         // Select All checkbox functionality
         document.getElementById('select-all').addEventListener('change', function (e) {
             const checkboxes = document.querySelectorAll('input[name="history_ids[]"]');
